@@ -5,3 +5,7 @@
 *.user
 *.suo
 .DS_Store
+*.http
+**/appsettings.Development.json
+*.tmp
+*.Backup.*
