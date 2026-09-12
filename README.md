@@ -2,7 +2,7 @@
 Микросервисная система для управления мероприятиями и бронированиями билетов.
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/4d345436-ca17-4146-b24b-d9e72fe18c03" alt="Архитектура TicketBookingSystem" width="1000">
+  <img src="https://github.com/user-attachments/assets/6dcb167b-a0c0-401f-81d1-3ae5b6693381" alt="Архитектура TicketBookingSystem" width="1000">
 </p>
 
 ## Установка и запуск проекта
