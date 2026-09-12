@@ -1,0 +1,230 @@
+services:
+  
+
+  api-gateway:
+    build:
+      context: .
+      dockerfile: services/ApiGateway/Dockerfile
+
+    ports:
+      - "8000:8080"
+    
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+
+    depends_on:
+      auth-api:
+        condition: service_started
+
+      event-api:
+        condition: service_started
+
+      booking-api:
+        condition: service_started
+  
+
+
+  rabbitmq:
+    image: rabbitmq:4-management
+
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+       
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
+
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+
+
+  event-api:
+
+    build:
+      context: .
+      dockerfile: services/EventService/EventService.API/Dockerfile
+
+    ports:
+      - "8080:8080"
+
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+
+      ConnectionStrings__DefaultConnection: >
+        Host=event-db;
+        Port=5432;
+        Database=${EVENT_DB_NAME};
+        Username=${DB_USER};
+        Password=${DB_PASSWORD}
+
+    depends_on:
+      event-db:
+        condition: service_healthy
+
+
+  event-db:
+    image: postgres:17
+
+    environment:
+      POSTGRES_DB: ${EVENT_DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+
+    ports:
+      - "5433:5432"
+
+    volumes:
+      - event-db-data:/var/lib/postgresql/data
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${EVENT_DB_NAME}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+
+  booking-db:
+    image: postgres:17
+
+    environment:
+      POSTGRES_DB: ${BOOKING_DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+
+    ports:
+      - "5434:5432"
+
+    volumes:
+      - booking-db-data:/var/lib/postgresql/data
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${BOOKING_DB_NAME}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  
+  booking-api:
+
+    build:
+      context: .
+      dockerfile: services/BookingService/BookingService.API/Dockerfile
+
+    ports:
+      - "8081:8080"
+ 
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+
+      ConnectionStrings__DefaultConnection: >
+        Host=booking-db;
+        Port=5432;
+        Database=${BOOKING_DB_NAME};
+        Username=${DB_USER};
+        Password=${DB_PASSWORD}
+              
+      Jwt__Key: ${JWT_KEY}
+      Jwt__Issuer: AuthService
+      Jwt__Audience: TicketBookingSystem
+
+      RabbitMq__Host: rabbitmq
+      RabbitMq__Username: ${RABBITMQ_USER}
+      RabbitMq__Password: ${RABBITMQ_PASSWORD}
+
+    depends_on:
+      booking-db:
+        condition: service_healthy
+
+      event-api:
+        condition: service_started
+
+      rabbitmq:
+        condition: service_started
+
+
+  auth-api:
+
+    build:
+      context: .
+      dockerfile: services/AuthService/AuthService.API/Dockerfile
+
+    ports:
+      - "8082:8080"
+
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+
+      ConnectionStrings__DefaultConnection: >
+        Host=auth-db;
+        Port=5432;
+        Database=${AUTH_DB_NAME};
+        Username=${DB_USER};
+        Password=${DB_PASSWORD}
+
+      Jwt__Key: ${JWT_KEY}
+      Jwt__Issuer: AuthService
+      Jwt__Audience: TicketBookingSystem
+      Jwt__ExpiresInMinutes: 60
+
+      RabbitMq__Host: rabbitmq
+      RabbitMq__Username: ${RABBITMQ_USER}
+      RabbitMq__Password: ${RABBITMQ_PASSWORD}
+
+
+    depends_on:
+      auth-db:
+        condition: service_healthy
+
+      rabbitmq:
+        condition: service_started
+
+  
+  auth-db:
+    image: postgres:17
+    environment:
+      POSTGRES_DB: ${AUTH_DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "5435:5432"
+    volumes:
+      - auth-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${AUTH_DB_NAME}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+
+  notification-api:
+    build:
+      context: .
+      dockerfile: services/NotificationService/NotificationService.API/Dockerfile
+
+    ports:
+      - "8083:8080"
+ 
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+
+      Email__From: ${EMAIL_FROM}
+      Email__Username: ${EMAIL_USERNAME}
+      Email__Password: ${EMAIL_PASSWORD}
+      Email__SmtpHost: ${EMAIL_SMTP_HOST}
+      Email__SmtpPort: ${EMAIL_SMTP_PORT}
+
+      RabbitMq__Host: rabbitmq
+      RabbitMq__Username: ${RABBITMQ_USER}
+      RabbitMq__Password: ${RABBITMQ_PASSWORD}
+
+    depends_on:
+      rabbitmq:
+        condition: service_started
+
+
+volumes:
+  event-db-data:
+  booking-db-data:
+  auth-db-data:
+  rabbitmq-data:
