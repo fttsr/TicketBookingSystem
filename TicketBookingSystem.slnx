@@ -1,0 +1,36 @@
+<Solution>
+  <Folder Name="/services/">
+    <Project Path="services/ApiGateway/ApiGateway.csproj" Id="05eca417-a425-4bd2-8082-db15b2c8124c" />
+  </Folder>
+  <Folder Name="/services/AuthService/">
+    <Project Path="services/AuthService/AuthService.API/AuthService.API.csproj" Id="e618db21-60a7-4eae-894d-a018bed1301a" />
+    <Project Path="services/AuthService/AuthService.Application/AuthService.Application.csproj" Id="b5db7ce6-fe74-4b96-af22-311fefa741a5" />
+    <Project Path="services/AuthService/AuthService.Domain/AuthService.Domain.csproj" Id="9f796140-eae1-4924-9e4f-e585ac1ecf9d" />
+    <Project Path="services/AuthService/AuthService.Infrastructure/AuthService.Infrastructure.csproj" Id="a54e47b9-2af1-4292-96c6-53aed8e331b9" />
+  </Folder>
+  <Folder Name="/services/BookingService/">
+    <Project Path="services/BookingService/BookingService.API/BookingService.API.csproj" Id="92648f0d-56a0-4fdf-9ade-476b9406512b" />
+    <Project Path="services/BookingService/BookingService.Application/BookingService.Application.csproj" Id="c7c133f0-c69f-465e-92e1-cb907a7aef76" />
+    <Project Path="services/BookingService/BookingService.Domain/BookingService.Domain.csproj" Id="28f7b1ff-567d-4840-b44b-d48eed079d6d" />
+    <Project Path="services/BookingService/BookingService.Infrastructure/BookingService.Infrastructure.csproj" Id="c24d1fcc-a122-4947-9f3e-b1ce9a1b2279" />
+  </Folder>
+  <Folder Name="/services/EventService/">
+    <Project Path="services/EventService/EventService.API/EventService.API.csproj" />
+    <Project Path="services/EventService/EventService.Application/EventService.Application.csproj" />
+    <Project Path="services/EventService/EventService.Domain/EventService.Domain.csproj" />
+    <Project Path="services/EventService/EventService.Infrastructure/EventService.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/services/NotificationService/">
+    <Project Path="services/NotificationService/NotificationService.API/NotificationService.API.csproj" Id="29507b22-1c45-47a3-840a-5d6408cea831" />
+    <Project Path="services/NotificationService/NotificationService.Application/NotificationService.Application.csproj" Id="dba60e2c-2a5d-4396-b3e5-eb09b051855b" />
+    <Project Path="services/NotificationService/NotificationService.Infrastructure/NotificationService.Infrastructure.csproj" Id="fe7dbb52-76f7-4d1c-889f-94350136904b" />
+  </Folder>
+  <Folder Name="/shared/">
+    <Project Path="shared/TicketBookingSystem.Contracts/TicketBookingSystem.Contracts.csproj" Id="114cf779-fb7a-4cba-8dfb-4b5689973ee8" />
+  </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path=".env" />
+    <File Path=".gitignore" />
+    <File Path="docker-compose.yml" />
+  </Folder>
+</Solution>
