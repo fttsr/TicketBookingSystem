@@ -12,11 +12,13 @@ namespace EventService.Application.Services
     {
         private readonly IEventRepository _repository;
         private readonly IMapper _mapper;
+        private readonly IEventCache _cache;
 
-        public EventService(IEventRepository repository, IMapper mapper)
+        public EventService(IEventRepository repository, IMapper mapper, IEventCache cache)
         {
             _repository = repository;
             _mapper = mapper;
+            _cache = cache;
         }
 
         public async Task<EventDto?> CancelReservationAsync(Guid id)
@@ -29,6 +31,8 @@ namespace EventService.Application.Services
             eventItem.CancelReservation();
 
             await _repository.SaveChangesAsync();
+
+            await _cache.RemoveAsync(id);
 
             return _mapper.Map<EventDto>(eventItem);
         }
@@ -56,6 +60,8 @@ namespace EventService.Application.Services
             await _repository.DeleteAsync(eventItem);
             await _repository.SaveChangesAsync();
 
+            await _cache.RemoveAsync(id);
+
             return true;
         }
 
@@ -67,8 +73,22 @@ namespace EventService.Application.Services
 
         public async Task<EventDto?> GetByIdAsync(Guid id)
         {
+            var cachedEvent = await _cache.GetAsync(id);
+
+            if (cachedEvent is not null)
+                return cachedEvent;
+
+
             var eventItem = await _repository.GetByIdAsync(id);
-            return _mapper.Map<EventDto>(eventItem);
+
+            if (eventItem is null)
+                return null;
+
+            var eventDto = _mapper.Map<EventDto>(eventItem);
+
+            await _cache.SetAsync(eventDto);
+
+            return eventDto;
         }
 
         public async Task<EventDto?> ReserveTicketAsync(Guid id)
@@ -81,6 +101,8 @@ namespace EventService.Application.Services
             eventItem.ReserveTicket();
 
             await _repository.SaveChangesAsync();
+
+            await _cache.RemoveAsync(id);
 
             return _mapper.Map<EventDto>(eventItem);
         }
@@ -95,6 +117,8 @@ namespace EventService.Application.Services
             _mapper.Map(dto, eventItem);
 
             await _repository.SaveChangesAsync();
+
+            await _cache.RemoveAsync(id);
 
             return _mapper.Map<EventDto>(eventItem);
         }
