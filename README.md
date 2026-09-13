@@ -2,7 +2,7 @@
 Микросервисная система для управления мероприятиями и бронированиями билетов.
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/6dcb167b-a0c0-401f-81d1-3ae5b6693381" alt="Архитектура TicketBookingSystem" width="1000">
+  <img src="https://github.com/user-attachments/assets/5c280495-74d2-4f0a-9ec9-718b430ce249" alt="Архитектура TicketBookingSystem" width="1000">
 </p>
 
 ## Установка и запуск проекта
@@ -48,6 +48,7 @@ docker compose up --build
 - ASP.NET Core
 - Entity Framework Core
 - PostgreSQL
+- Redis
 - RabbitMQ
 - Docker
 - Docker Compose
