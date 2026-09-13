@@ -1,9 +1,11 @@
 using EventService.API.Middleware;
 using EventService.Application.Interfaces;
 using EventService.Application.Mapper;
+using EventService.Infrastructure.Cache;
 using EventService.Infrastructure.Data;
 using EventService.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
+using StackExchange.Redis;
 
 
 namespace EventService.API
@@ -27,6 +29,15 @@ namespace EventService.API
             builder.Services.AddScoped<IEventService, EventService.Application.Services.EventService>();
 
             builder.Services.AddAutoMapper(config => config.AddProfile<EventProfile>());
+
+            builder.Services.AddSingleton<IConnectionMultiplexer>(_ =>
+            {
+                var connectionString = builder.Configuration["Redis:ConnectionString"];
+
+                return ConnectionMultiplexer.Connect(connectionString!);
+            });
+
+            builder.Services.AddScoped<IEventCache, EventCache>();
 
             builder.Services.AddSwaggerGen();
 
