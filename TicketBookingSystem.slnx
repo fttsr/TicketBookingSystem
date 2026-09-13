@@ -33,4 +33,5 @@
     <File Path=".gitignore" />
     <File Path="docker-compose.yml" />
   </Folder>
+  <Project Path="tests/EventService.Tests/EventService.Tests.csproj" Id="07a67755-162b-4da7-817a-1d217ab2c5b2" />
 </Solution>
