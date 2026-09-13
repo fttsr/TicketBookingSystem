@@ -51,6 +51,7 @@ docker compose up --build
 - RabbitMQ
 - Docker
 - Docker Compose
+- xUnit
    
 Полный список используемых библиотек можно посмотреть в соответствующих *.csproj* файлах проектов.
 
