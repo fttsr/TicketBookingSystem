@@ -1,3 +1,5 @@
+import { mockEvents } from './mockEvents'
+
 export type EventItem = {
   id: string
   title: string
@@ -6,6 +8,7 @@ export type EventItem = {
   venue: string
   price: number
   availableTickets: number
+  isMock?: boolean
 }
 export type BookingItem = {
   id: string
@@ -53,8 +56,23 @@ export async function apiRequest<T>(path: string, init: RequestInit = {}): Promi
 }
 
 export const eventsApi = {
-  getAll: () => apiRequest<EventItem[]>('/api/events'),
-  getById: (id: string) => apiRequest<EventItem>('/api/events/' + id),
+  getAll: async () => {
+    try {
+      const events = await apiRequest<EventItem[]>('/api/events')
+      return events.length > 0 ? events : mockEvents
+    } catch {
+      return mockEvents
+    }
+  },
+  getById: async (id: string) => {
+    try {
+      return await apiRequest<EventItem>('/api/events/' + id)
+    } catch (error) {
+      const mockEvent = mockEvents.find((event) => event.id === id)
+      if (mockEvent) return mockEvent
+      throw error
+    }
+  },
 }
 type AuthResponse = { token?: string; Token?: string }
 async function authenticate(path: string, credentials: Credentials) {

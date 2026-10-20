@@ -46,6 +46,7 @@ export default function EventsPage() {
         <button className={filter === 'upcoming' ? 'filter-pill active' : 'filter-pill'} onClick={() => setFilter('upcoming')}>Предстоящие</button>
         <button className={filter === 'available' ? 'filter-pill active' : 'filter-pill'} onClick={() => setFilter('available')}>Есть билеты</button>
       </div></div>
+      {!loading && events.some((event) => event.isMock) && <p className="demo-data-notice" role="status">Бронирование временно не доступно.</p>}
       {loading && <div className="state-panel"><span className="loading-spinner" /><h3>Загружаем мероприятия</h3></div>}
       {!loading && error && <div className="state-panel state-panel-error"><span className="state-icon">!</span><h3>Не удалось загрузить мероприятия</h3><p>{error}</p><button className="button button-outline" onClick={() => window.location.reload()}>Попробовать снова</button></div>}
       {!loading && !error && visible.length === 0 && <div className="state-panel"><span className="state-icon">⌕</span><h3>{events.length ? 'Ничего не найдено' : 'Мероприятий пока нет'}</h3><p>{events.length ? 'Измените запрос или фильтр.' : 'Когда мероприятия появятся, они будут отображаться здесь.'}</p>{search && <button className="button button-outline" onClick={() => setSearch('')}>Сбросить поиск</button>}</div>}

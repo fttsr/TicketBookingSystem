@@ -35,6 +35,7 @@ export default function EventPage() {
 
   return <main className="page-shell detail-page">
     <Link className="back-link" to="/events"><span>←</span> Все мероприятия</Link>
+    {event.isMock && <p className="demo-data-notice" role="status">Бронирование временно недоступно.</p>}
     <div className="detail-layout">
       <article className="detail-main">
         <div className="detail-cover"><span>МЕРОПРИЯТИЕ TBS</span><strong>{event.title}</strong><small>{formatDateTime(event.date)}</small></div>
@@ -52,7 +53,7 @@ export default function EventPage() {
         <div className="booking-summary-row"><span>Мероприятие</span><strong>{event.title}</strong></div>
         <div className="booking-summary-row"><span>Место</span><strong>{event.venue}</strong></div>
         {error && <div className="form-alert" role="alert">{error}</div>}
-        {success ? <div className="booking-success"><span>✓</span><strong>Билет забронирован</strong><Link to="/bookings">Открыть мои бронирования →</Link></div> :
+        {event.isMock ? <div className="demo-data-notice booking-demo-notice"></div> : success ? <div className="booking-success"><span>✓</span><strong>Билет забронирован</strong><Link to="/bookings">Открыть мои бронирования →</Link></div> :
           <button className="button button-primary button-wide booking-cta" disabled={busy || event.availableTickets <= 0} onClick={book}>{busy ? 'Бронируем…' : event.availableTickets > 0 ? 'Забронировать билет' : 'Билетов нет'}</button>}
         <p className="booking-footnote">Оплата сейчас не требуется. Бронь появится в вашем списке.</p>
       </aside>
