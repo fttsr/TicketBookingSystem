@@ -17,6 +17,7 @@ export type BookingItem = {
 export type Credentials = { email: string; password: string }
 
 const TOKEN_KEY = 'ticket-booking-token'
+const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL ?? '').replace(/\/+$/, '')
 export const tokenStorage = {
   get: () => window.sessionStorage.getItem(TOKEN_KEY),
   set: (token: string) => window.sessionStorage.setItem(TOKEN_KEY, token),
@@ -41,7 +42,7 @@ export async function apiRequest<T>(path: string, init: RequestInit = {}): Promi
   if (init.body && !headers.has('Content-Type')) headers.set('Content-Type', 'application/json')
   let response: Response
   try {
-    response = await fetch(path, { ...init, headers })
+    response = await fetch(API_BASE_URL + path, { ...init, headers })
   } catch {
     throw new Error('Не удалось подключиться к API. Проверь, запущен ли backend.')
   }
