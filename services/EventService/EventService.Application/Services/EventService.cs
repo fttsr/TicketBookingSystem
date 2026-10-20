@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using EventService.Application.DTOs;
 using EventService.Application.Interfaces;
 using EventService.Domain.Entities;
@@ -114,7 +114,18 @@ namespace EventService.Application.Services
             if (eventItem is null)
                 return null;
 
+            var reservedTickets = eventItem.TotalTickets - eventItem.AvailableTickets;
+
+            if (reservedTickets < 0)
+                throw new InvalidOperationException(
+                    "Остаток билетов больше общей вместимости. Сначала исправьте данные мероприятия.");
+
+            if (dto.TotalTickets < reservedTickets)
+                throw new InvalidOperationException(
+                    "Новая вместимость не может быть меньше количества уже забронированных билетов.");
+
             _mapper.Map(dto, eventItem);
+            eventItem.AvailableTickets = dto.TotalTickets - reservedTickets;
 
             await _repository.SaveChangesAsync();
 
